@@ -17,15 +17,15 @@ def server2():
     net = Mininet( controller=None )
 
     info( '*** Adding hosts\n' )
-    red2 = net.addHost( 'red2', ip='10.0.0.2', mac='00:00:00:00:00:02')
-    blue2 = net.addHost( 'blue2', ip='10.0.0.2', mac='00:00:00:00:00:02')
+    h3 = net.addHost( 'h3', ip='10.0.0.3', mac='00:00:00:00:00:03')
+    h4 = net.addHost( 'h4', ip='10.0.0.4', mac='00:00:00:00:00:04')
 
     info( '*** Adding switch\n' )
     s2 = net.addSwitch( 's2' )
 
     info( '*** Creating links\n' )
-    net.addLink( red2, s2 )
-    net.addLink( blue2, s2 )
+    net.addLink( h3, s2 )
+    net.addLink( h4, s2 )
 
     info( '*** Starting network\n')
     net.start()

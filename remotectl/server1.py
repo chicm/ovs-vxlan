@@ -1,41 +1,38 @@
-#!/usr/bin/python
+"""Custom topology example
 
+Two directly connected switches plus a host for each switch:
+
+   host --- switch --- switch --- host
+
+Adding the 'topos' dict with a key/value pair to generate our newly defined
+topology enables one to pass in '--topo=mytopo' from the command line.
 """
-This example shows how to create an empty Mininet object
-(without a topology object) and add nodes to it manually.
-"""
 
-from mininet.net import Mininet
-from mininet.node import Controller
-from mininet.cli import CLI
-from mininet.log import setLogLevel, info
+from mininet.topo import Topo
 
-def server1():
+class MyTopo( Topo ):
+    "Simple topology example."
 
-    "Create an empty network and add nodes to it."
+    def __init__( self ):
+        "Create custom topo."
 
-    net = Mininet( controller=None )
+        # Initialize topology
+        Topo.__init__( self )
 
-    info( '*** Adding hosts\n' )
-    red1 = net.addHost( 'red1', ip='10.0.0.1', mac='00:00:00:00:00:01')
-    blue1 = net.addHost( 'blue1', ip='10.0.0.1', mac='00:00:00:00:00:01')
+        # Add hosts and switches
+        h1 = self.addHost( 'h1')
+        h2 = self.addHost( 'h2')
+        s1 = self.addSwitch('s1')
+ 
+        # Add links
+        self.addLink( h1, s1 )
+        self.addLink( h2, s1 )
 
-    info( '*** Adding switch\n' )
-    s1 = net.addSwitch( 's1' )
 
-    info( '*** Creating links\n' )
-    net.addLink( red1, s1 )
-    net.addLink( blue1, s1 )
+topos = { 'mytopo': ( lambda: MyTopo() ) }
 
-    info( '*** Starting network\n')
-    net.start()
-
-    info( '*** Running CLI\n' )
-    CLI( net )
-
-    info( '*** Stopping network' )
-    net.stop()
-
-if __name__ == '__main__':
-    setLogLevel( 'info' )
-    server1()
+# sudo mn --custom ~/server1.py --controller=remote,ip=192.168.99.1
+# mininet> h1 ifconfig h1-eth0 10.0.0.1
+# mininet> h1 ip link set h1-eth0 address 00:00:00:00:00:01 
+# mininet> h2 ifconfig h2-eth0 10.0.0.2
+# mininet> h2 ip link set h2-eth0 address 00:00:00:00:00:02 
